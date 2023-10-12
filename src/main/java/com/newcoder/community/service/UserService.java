@@ -7,4 +7,6 @@ import java.util.Map;
 public interface UserService {
     User findById(Integer id);
     Map<String, Object> register(User user);
+
+    int activation(Integer userId, String code);
 }

@@ -3,6 +3,7 @@ package com.newcoder.community.service.impl;
 import com.newcoder.community.entity.User;
 import com.newcoder.community.mapper.UserMapper;
 import com.newcoder.community.service.UserService;
+import com.newcoder.community.utils.CommunityConstant;
 import com.newcoder.community.utils.CommunityUtil;
 import com.newcoder.community.utils.MailUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, CommunityConstant {
     @Autowired
     private UserMapper userMapper;
 
@@ -87,5 +88,23 @@ public class UserServiceImpl implements UserService {
         mailUtil.sendMail(user.getEmail(), "激活账号", content);
 
         return map;
+    }
+
+    @Override
+    public int activation(Integer userId, String code) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return ACTIVATION_FAILURE;
+        }
+        // 重复激活
+        if (user.getStatus() == 1) {
+            return ACTIVATION_REPEAT;
+        }
+        // 激活成功
+        if (code != null && code.equals(user.getActivationCode())) {
+            return ACTIVATION_SUCCESS;
+        }
+        // 激活失败
+        return ACTIVATION_FAILURE;
     }
 }
