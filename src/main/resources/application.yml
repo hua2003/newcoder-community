@@ -14,6 +14,17 @@ spring:
       maximum-pool-size: 15
       minimum-idle: 5
       idle-timeout: 30000
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: 1126964021@qq.com
+    password: wfysowjlxrhbbaef
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.newcoder.community.entity
