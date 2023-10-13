@@ -8,8 +8,8 @@ public interface UserMapper {
     User selectById(Integer id);
     User selectByName(String name);
     User selectByEmail(String email);
-    int insertUser(User user);
-    int updateStatus(Integer id, Integer status);
-    int updateHeader(Integer id, String headerUrl);
-    int updatePassword(Integer id, String password);
+    Integer insertUser(User user);
+    Integer updateStatus(Integer id, Integer status);
+    Integer updateHeader(Integer id, String headerUrl);
+    Integer updatePassword(Integer id, String password);
 }

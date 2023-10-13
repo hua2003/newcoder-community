@@ -1,12 +1,15 @@
 package com.newcoder.community.service.impl;
 
+import com.newcoder.community.entity.LoginTicket;
 import com.newcoder.community.entity.User;
+import com.newcoder.community.mapper.LoginTicketMapper;
 import com.newcoder.community.mapper.UserMapper;
 import com.newcoder.community.service.UserService;
 import com.newcoder.community.utils.CommunityConstant;
 import com.newcoder.community.utils.CommunityUtil;
 import com.newcoder.community.utils.MailUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Arg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,9 @@ import java.util.Random;
 public class UserServiceImpl implements UserService, CommunityConstant {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     @Autowired
     private MailUtil mailUtil;
@@ -40,6 +46,11 @@ public class UserServiceImpl implements UserService, CommunityConstant {
         return userMapper.selectById(id);
     }
 
+    /**
+     * 注册
+     * @param user
+     * @return
+     */
     @Override
     public Map<String, Object> register(User user) {
         Map<String, Object> map = new HashMap<>();
@@ -90,6 +101,12 @@ public class UserServiceImpl implements UserService, CommunityConstant {
         return map;
     }
 
+    /**
+     * 激活账号
+     * @param userId
+     * @param code
+     * @return
+     */
     @Override
     public int activation(Integer userId, String code) {
         User user = userMapper.selectById(userId);
@@ -102,9 +119,60 @@ public class UserServiceImpl implements UserService, CommunityConstant {
         }
         // 激活成功
         if (code != null && code.equals(user.getActivationCode())) {
+            userMapper.updateStatus(userId, 1);
             return ACTIVATION_SUCCESS;
         }
         // 激活失败
         return ACTIVATION_FAILURE;
+    }
+
+    /**
+     * 登录
+     * @param username
+     * @param password
+     * @param expiredSeconds
+     * @return
+     */
+    @Override
+    public Map<String, Object> login(String username, String password, Long expiredSeconds) {
+        Map<String, Object> map = new HashMap<>();
+        System.out.println("yes");
+        if (StringUtils.isBlank(username)) {
+            map.put("usernameMsg", "账号不能为空！");
+            return map;
+        }
+        if (StringUtils.isBlank(password)) {
+            map.put("passwordMsg", "密码不能为空！");
+            return map;
+        }
+
+        User user = userMapper.selectByName(username);
+        if (user == null) {
+            map.put("usernameMsg", "该账号不存在！");
+            return map;
+        }
+        if (user.getStatus() == 0) {
+            map.put("usernameMsg", "该账号未激活！");
+            return map;
+        }
+        if (!user.getPassword().equals(CommunityUtil.md5(password + user.getSalt()))) {
+            map.put("passwordMsg", "密码不正确！");
+            return map;
+        }
+
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(user.getId());
+        loginTicket.setTicket(CommunityUtil.generateUUID());
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+
+        map.put("ticket", loginTicket.getTicket());
+        return map;
+    }
+
+    @Override
+    public void logout(String ticket) {
+        loginTicketMapper.updateLoginTicketStatus(ticket, 1);
     }
 }

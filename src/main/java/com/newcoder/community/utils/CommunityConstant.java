@@ -15,4 +15,14 @@ public interface CommunityConstant {
      * 激活失败
      */
     int ACTIVATION_FAILURE = 2;
+
+    /**
+     * ticket默认时间
+     */
+    long DEFAULT_EXPIRED_SECONDS = 3600L * 12;
+
+    /**
+     * ticket加长时间
+     */
+    long REMEMBER_EXPIRED_SECONDS = 3600L * 24 * 100;
 }
