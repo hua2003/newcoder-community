@@ -175,4 +175,11 @@ public class UserServiceImpl implements UserService, CommunityConstant {
     public void logout(String ticket) {
         loginTicketMapper.updateLoginTicketStatus(ticket, 1);
     }
+
+    @Override
+    public void updateHeader(Integer userId, String headerUrl) {
+        if (userId != null && headerUrl != null) {
+            userMapper.updateHeader(userId, headerUrl);
+        }
+    }
 }
