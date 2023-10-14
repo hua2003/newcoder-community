@@ -1,6 +1,7 @@
 package com.newcoder.community.controller;
 
 import com.google.code.kaptcha.Producer;
+import com.newcoder.community.annotation.LoginRequired;
 import com.newcoder.community.entity.User;
 import com.newcoder.community.service.UserService;
 import com.newcoder.community.utils.CommunityConstant;
@@ -139,6 +140,7 @@ public class LoginController implements CommunityConstant {
         }
     }
 
+    @LoginRequired
     @GetMapping("/logout")
     public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);
