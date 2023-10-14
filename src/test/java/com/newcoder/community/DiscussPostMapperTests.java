@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -20,5 +21,15 @@ public class DiscussPostMapperTests {
         }
         Integer integer = discussPostMapper.selectDiscussPostRows(149);
         System.out.println(integer);
+    }
+
+    @Test
+    void insert() {
+        DiscussPost discussPost = new DiscussPost();
+        discussPost.setUserId(150);
+        discussPost.setTitle("吕德华");
+        discussPost.setContent("五杀");
+        discussPost.setCreateTime(new Date());
+        discussPostMapper.insertDiscussPost(discussPost);
     }
 }

@@ -14,4 +14,5 @@ public interface DiscussPostMapper {
             @Param("offset") Integer offset,
             @Param("limit") Integer limit);
     Integer selectDiscussPostRows(@Param("userId") Integer userId);
+    Integer insertDiscussPost(DiscussPost discussPost);
 }
