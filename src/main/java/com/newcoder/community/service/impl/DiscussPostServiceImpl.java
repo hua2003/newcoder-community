@@ -19,17 +19,17 @@ public class DiscussPostServiceImpl implements DiscussPostService {
     private SensitiveFilter sensitiveFilter;
 
     @Override
-    public List<DiscussPost> findDiscussPosts(Integer userId, Integer offset, Integer limit) {
+    public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit) {
         return discussPostMapper.selectDiscussPosts(userId, offset, limit);
     }
 
     @Override
-    public Integer findDiscussPostRows(Integer userId) {
+    public int findDiscussPostRows(int userId) {
         return discussPostMapper.selectDiscussPostRows(userId);
     }
 
     @Override
-    public Integer insertDiscussPost(DiscussPost discussPost) {
+    public int insertDiscussPost(DiscussPost discussPost) {
         if (discussPost == null) {
             throw new IllegalArgumentException("参数不能为空！");
         }
@@ -43,5 +43,10 @@ public class DiscussPostServiceImpl implements DiscussPostService {
         discussPost.setContent(sensitiveFilter.filter(discussPost.getContent()));
 
         return discussPostMapper.insertDiscussPost(discussPost);
+    }
+
+    @Override
+    public DiscussPost selectDiscussPostById(int id) {
+        return discussPostMapper.selectDiscussPostById(id);
     }
 }

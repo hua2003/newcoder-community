@@ -7,39 +7,39 @@ import java.util.Map;
  */
 public class Page {
     // 当前页码
-    private Integer current = 1;
+    private int current = 1;
     // 显示上限
-    private Integer limit = 10;
+    private int limit = 10;
     // 数据总数
-    private Integer rows;
+    private int rows;
     // 页面路径
     private String path;
 
-    public Integer getCurrent() {
+    public int getCurrent() {
         return current;
     }
 
-    public void setCurrent(Integer current) {
-        if (current != null && current >= 1) {
+    public void setCurrent(int current) {
+        if (current >= 1) {
             this.current = current;
         }
     }
 
-    public Integer getLimit() {
+    public int getLimit() {
         return limit;
     }
 
-    public void setLimit(Integer limit) {
-        if (limit != null && limit >= 1 && limit <= 100) {
+    public void setLimit(int limit) {
+        if (limit >= 1 && limit <= 100) {
             this.limit = limit;
         }
     }
 
-    public Integer getRows() {
+    public int getRows() {
         return rows;
     }
 
-    public void setRows(Integer rows) {
+    public void setRows(int rows) {
         this.rows = rows;
     }
 
@@ -55,7 +55,7 @@ public class Page {
      * 起始行数
      * @return
      */
-    public Integer getOffset() {
+    public int getOffset() {
         return (current - 1) * limit;
     }
 
@@ -63,7 +63,7 @@ public class Page {
      * 总页码
      * @return
      */
-    public Integer getTotal() {
+    public int getTotal() {
         return (rows + limit - 1) / limit;
     }
 
@@ -71,7 +71,7 @@ public class Page {
      * 起始页码
      * @return
      */
-    public Integer getFrom() {
+    public int getFrom() {
         return Math.max(1,  current - 2);
     }
 
@@ -79,7 +79,7 @@ public class Page {
      * 结束页码
      * @return
      */
-    public Integer getTo() {
+    public int getTo() {
         return Math.min(this.getTotal(), current + 2);
     }
 }

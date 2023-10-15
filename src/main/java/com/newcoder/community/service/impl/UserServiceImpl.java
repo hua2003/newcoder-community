@@ -9,7 +9,6 @@ import com.newcoder.community.utils.CommunityConstant;
 import com.newcoder.community.utils.CommunityUtil;
 import com.newcoder.community.utils.MailUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Arg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,7 @@ public class UserServiceImpl implements UserService, CommunityConstant {
     private String contextPath;
 
     @Override
-    public User findById(Integer id) {
+    public User findById(int id) {
         return userMapper.selectById(id);
     }
 
@@ -108,7 +107,7 @@ public class UserServiceImpl implements UserService, CommunityConstant {
      * @return
      */
     @Override
-    public int activation(Integer userId, String code) {
+    public int activation(int userId, String code) {
         User user = userMapper.selectById(userId);
         if (user == null) {
             return ACTIVATION_FAILURE;
@@ -134,7 +133,7 @@ public class UserServiceImpl implements UserService, CommunityConstant {
      * @return
      */
     @Override
-    public Map<String, Object> login(String username, String password, Long expiredSeconds) {
+    public Map<String, Object> login(String username, String password, long expiredSeconds) {
         Map<String, Object> map = new HashMap<>();
         System.out.println("yes");
         if (StringUtils.isBlank(username)) {
@@ -177,9 +176,7 @@ public class UserServiceImpl implements UserService, CommunityConstant {
     }
 
     @Override
-    public void updateHeader(Integer userId, String headerUrl) {
-        if (userId != null && headerUrl != null) {
-            userMapper.updateHeader(userId, headerUrl);
-        }
+    public void updateHeader(int userId, String headerUrl) {
+        userMapper.updateHeader(userId, headerUrl);
     }
 }

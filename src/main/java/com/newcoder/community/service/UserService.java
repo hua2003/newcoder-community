@@ -1,16 +1,15 @@
 package com.newcoder.community.service;
 
+import com.newcoder.community.entity.DiscussPost;
 import com.newcoder.community.entity.User;
 
 import java.util.Map;
 
 public interface UserService {
-    User findById(Integer id);
+    User findById(int id);
     Map<String, Object> register(User user);
-    int activation(Integer userId, String code);
-    Map<String, Object> login(String username, String password, Long expired);
-
+    int activation(int userId, String code);
+    Map<String, Object> login(String username, String password, long expired);
     void logout(String ticket);
-
-    void updateHeader(Integer userId, String headerUrl);
+    void updateHeader(int userId, String headerUrl);
 }

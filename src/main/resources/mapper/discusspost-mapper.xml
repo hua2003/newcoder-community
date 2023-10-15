@@ -20,7 +20,7 @@
         order by type desc, create_time desc
         limit #{offset}, #{limit}
     </select>
-    <select id="selectDiscussPostRows" resultType="Integer">
+    <select id="selectDiscussPostRows" resultType="int">
         select count(id)
         from discuss_post
         where status != 2
@@ -32,4 +32,13 @@
         insert into discuss_post(<include refid="insertFields"></include>)
         values (#{userId}, #{title}, #{content}, #{type}, #{status}, #{createTime}, #{commentCount}, #{score})
     </insert>
+    <select id="selectDiscussPostById" resultType="DiscussPost">
+        select <include refid="selectFields"></include>
+        from discuss_post
+        where id = #{id}
+    </select>
+    <update id="updateCommentCount">
+        update discuss_post set commentCount = #{count}
+        where id = #{entityId}
+    </update>
 </mapper>

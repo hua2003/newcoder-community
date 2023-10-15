@@ -3,22 +3,22 @@ package com.newcoder.community.entity;
 import java.util.Date;
 
 public class User {
-    private Integer id;
+    private int id;
     private String username;
     private String password;
     private String salt;
     private String email;
-    private Integer type;
-    private Integer status;
+    private int type;
+    private int status;
     private String activationCode;
     private String headerUrl;
     private Date createTime;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -54,19 +54,19 @@ public class User {
         this.email = email;
     }
 
-    public Integer getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(int type) {
         this.type = type;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

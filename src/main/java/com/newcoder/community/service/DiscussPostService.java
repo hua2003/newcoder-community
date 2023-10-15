@@ -5,7 +5,8 @@ import com.newcoder.community.entity.DiscussPost;
 import java.util.List;
 
 public interface DiscussPostService {
-    List<DiscussPost> findDiscussPosts(Integer userId, Integer offset, Integer limit);
-    Integer findDiscussPostRows(Integer userId);
-    Integer insertDiscussPost(DiscussPost discussPost);
+    List<DiscussPost> findDiscussPosts(int userId, int offset, int limit);
+    int findDiscussPostRows(int userId);
+    int insertDiscussPost(DiscussPost discussPost);
+    DiscussPost selectDiscussPostById(int id);
 }
