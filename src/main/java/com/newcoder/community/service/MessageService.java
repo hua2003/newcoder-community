@@ -10,4 +10,6 @@ public interface MessageService {
     List<Message> findLetters(String conversationId, int offset, int limit);
     int findLetterCount(String conversationId);
     int findLetterUnreadCount(int userId, String conversationsId);
+    int addMessage(Message message);
+    int readMessage(List<Integer> ids, int status);
 }

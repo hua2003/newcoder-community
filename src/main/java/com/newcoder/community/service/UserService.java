@@ -12,4 +12,5 @@ public interface UserService {
     Map<String, Object> login(String username, String password, long expired);
     void logout(String ticket);
     void updateHeader(int userId, String headerUrl);
+    User findByName(String name);
 }
