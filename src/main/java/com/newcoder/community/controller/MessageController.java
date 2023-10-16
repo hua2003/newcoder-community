@@ -99,6 +99,7 @@ public class MessageController {
     @PostMapping("/letter/send")
     @ResponseBody
     public String sendLetter(String toName, String content) {
+        Integer.valueOf("abc");
         User target = userService.findByName(toName);
         if (target == null) {
             return CommunityUtil.getJSONString(1, "用户不存在！");
