@@ -25,6 +25,10 @@ spring:
         smtp:
           ssl:
             enable: true
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.newcoder.community.entity
@@ -40,3 +44,4 @@ community:
   path:
     domain: http://localhost:8080
     upload: d:/code/javaproject/data/upload
+
