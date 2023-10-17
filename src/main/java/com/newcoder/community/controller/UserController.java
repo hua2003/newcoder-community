@@ -3,8 +3,10 @@ package com.newcoder.community.controller;
 
 import com.newcoder.community.annotation.LoginRequired;
 import com.newcoder.community.entity.User;
+import com.newcoder.community.service.FollowService;
 import com.newcoder.community.service.LikeService;
 import com.newcoder.community.service.UserService;
+import com.newcoder.community.utils.CommunityConstant;
 import com.newcoder.community.utils.CommunityUtil;
 import com.newcoder.community.utils.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +31,7 @@ import java.io.OutputStream;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Value("${server.servlet.context-path}")
@@ -49,6 +51,9 @@ public class UserController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @LoginRequired
     @GetMapping("/setting")
@@ -114,6 +119,19 @@ public class UserController {
         model.addAttribute("user", user);
         int userLikeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("likeCount", userLikeCount);
+
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount", followeeCount);
+
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount", followerCount);
+
+        boolean hasFollowed = false;
+        if (hostHolder.getUser() != null) {
+            hasFollowed = followService.findFollowStatus(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
+        }
+        model.addAttribute("hasFollowed", hasFollowed);
+
         return "/site/profile";
     }
 }

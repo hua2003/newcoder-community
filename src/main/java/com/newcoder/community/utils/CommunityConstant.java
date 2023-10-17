@@ -27,12 +27,17 @@ public interface CommunityConstant {
     long REMEMBER_EXPIRED_SECONDS = 3600L * 24 * 100;
 
     /**
-     * 实体类型：评论
+     * 实体类型1：评论
      */
     int ENTITY_TYPE_POST = 1;
 
     /**
-     * 实体类型：回复
+     * 实体类型2：回复
      */
     int ENTITY_TYPE_COMMENT = 2;
+
+    /**
+     * 实体类型3：用户
+     */
+    int ENTITY_TYPE_USER = 3;
 }
