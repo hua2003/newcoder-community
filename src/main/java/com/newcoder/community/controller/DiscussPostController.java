@@ -6,6 +6,7 @@ import com.newcoder.community.entity.Page;
 import com.newcoder.community.entity.User;
 import com.newcoder.community.service.CommentService;
 import com.newcoder.community.service.DiscussPostService;
+import com.newcoder.community.service.LikeService;
 import com.newcoder.community.service.UserService;
 import com.newcoder.community.utils.CommunityConstant;
 import com.newcoder.community.utils.CommunityUtil;
@@ -31,6 +32,9 @@ public class DiscussPostController implements CommunityConstant {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
 
     @ResponseBody
     @PostMapping("/add")
@@ -61,6 +65,9 @@ public class DiscussPostController implements CommunityConstant {
         model.addAttribute("post", discussPost);
         model.addAttribute("user", user);
 
+        model.addAttribute("likeCount", likeService.findLikeCount(ENTITY_TYPE_POST, id));
+        model.addAttribute("likeStatus", hostHolder.getUser() == null ? 0 : likeService.findLikeStatus(hostHolder.getUser().getId(), ENTITY_TYPE_POST, discussPost.getId()));
+
         page.setLimit(5);
         page.setPath("/discuss/detail/" + id);
         page.setRows(discussPost.getCommentCount());
@@ -72,6 +79,9 @@ public class DiscussPostController implements CommunityConstant {
             commentVO.put("comment", comment);
             commentVO.put("user", userService.findById(comment.getUserId()));
 
+            commentVO.put("likeCount", likeService.findLikeCount(ENTITY_TYPE_COMMENT, comment.getId()));
+            commentVO.put("likeStatus", likeService.findLikeStatus(hostHolder.getUser() == null ? 0 : hostHolder.getUser().getId(), ENTITY_TYPE_COMMENT, comment.getId()));
+
             List<Comment> replyList = commentService.findCommentsByEntity(ENTITY_TYPE_COMMENT, comment.getId(), 0, Integer.MAX_VALUE);
             List<Map<String, Object>> replyVOList = new ArrayList<>(replyList.size());
             if (replyList != null) {
@@ -82,6 +92,9 @@ public class DiscussPostController implements CommunityConstant {
                     User target = reply.getTargetId() == 0 ? null : userService.findById(reply.getTargetId());
                     replyVO.put("target", target);
                     replyVOList.add(replyVO);
+
+                    replyVO.put("likeCount", likeService.findLikeCount(ENTITY_TYPE_COMMENT, reply.getId()));
+                    replyVO.put("likeStatus", likeService.findLikeStatus(hostHolder.getUser() == null ? 0 : hostHolder.getUser().getId(), ENTITY_TYPE_COMMENT, reply.getEntityId()));
                 }
             }
             commentVO.put("replys", replyVOList);
