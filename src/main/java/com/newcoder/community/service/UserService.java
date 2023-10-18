@@ -11,6 +11,9 @@ public interface UserService {
     int activation(int userId, String code);
     Map<String, Object> login(String username, String password, long expired);
     void logout(String ticket);
-    void updateHeader(int userId, String headerUrl);
+    int updateHeader(int userId, String headerUrl);
     User findByName(String name);
+    User getCache(int userId);
+    User initCache(int userId);
+    void clearCache(int userId);
 }

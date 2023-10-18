@@ -6,7 +6,9 @@ import com.newcoder.community.mapper.LoginTicketMapper;
 import com.newcoder.community.mapper.UserMapper;
 import com.newcoder.community.utils.CookieUtil;
 import com.newcoder.community.utils.HostHolder;
+import com.newcoder.community.utils.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,11 +28,17 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String ticket = CookieUtil.getValue(request, "ticket");
         if (ticket != null) {
-            LoginTicket loginTicket = loginTicketMapper.selectLoginTicketByTicket(ticket);
+//            LoginTicket loginTicket = loginTicketMapper.selectLoginTicketByTicket(ticket);
+            String ticketKey = RedisKeyUtil.getTicketKey(ticket);
+            LoginTicket loginTicket = (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
+
             if (loginTicket != null && loginTicket.getStatus() == 0 && loginTicket.getExpired().after(new Date())) {
                 User user = userMapper.selectById(loginTicket.getUserId());
                 hostHolder.setUser(user);
