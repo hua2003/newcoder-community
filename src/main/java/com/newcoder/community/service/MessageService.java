@@ -12,4 +12,7 @@ public interface MessageService {
     int findLetterUnreadCount(int userId, String conversationsId);
     int addMessage(Message message);
     int readMessage(List<Integer> ids, int status);
+    Message findLatestNotice(int userId, String topic);
+    int findNoticeCount(int userId, String topic);
+    int findNoticeUnreadCount(int userId, String topic);
 }

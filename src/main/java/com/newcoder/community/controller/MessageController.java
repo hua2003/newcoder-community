@@ -1,11 +1,13 @@
 package com.newcoder.community.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.newcoder.community.entity.Comment;
 import com.newcoder.community.entity.Message;
 import com.newcoder.community.entity.Page;
 import com.newcoder.community.entity.User;
 import com.newcoder.community.service.MessageService;
 import com.newcoder.community.service.UserService;
+import com.newcoder.community.utils.CommunityConstant;
 import com.newcoder.community.utils.CommunityUtil;
 import com.newcoder.community.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.*;
 
 @Controller
-public class MessageController {
+public class MessageController implements CommunityConstant {
     @Autowired
     private MessageService messageService;
 
@@ -52,6 +55,7 @@ public class MessageController {
         }
         model.addAttribute("conversationVO" ,conversationVO);
         model.addAttribute("letterUnreadCount", messageService.findLetterUnreadCount(user.getId(), null));
+        model.addAttribute("noticeUnreadCount", messageService.findNoticeUnreadCount(user.getId(), null));
 
         return "/site/letter";
     }
@@ -99,7 +103,6 @@ public class MessageController {
     @PostMapping("/letter/send")
     @ResponseBody
     public String sendLetter(String toName, String content) {
-        Integer.valueOf("abc");
         User target = userService.findByName(toName);
         if (target == null) {
             return CommunityUtil.getJSONString(1, "用户不存在！");
@@ -119,5 +122,67 @@ public class MessageController {
         messageService.addMessage(message);
 
         return CommunityUtil.getJSONString(0);
+    }
+
+    @GetMapping("/notice/list")
+    public String getNoticePage(Model model) {
+        int userId = hostHolder.getUser().getId();
+
+        Map<String, Object> commentVO = new HashMap<>();
+        Message comment = messageService.findLatestNotice(userId, TOPIC_COMMENT);
+        if (comment != null) {
+            commentVO.put("notice", comment);
+
+            String content = HtmlUtils.htmlUnescape(comment.getContent());
+            HashMap data = JSONObject.parseObject(content, HashMap.class);
+
+            commentVO.put("user", userService.findById((Integer) data.get("userId")));
+            commentVO.put("entityType", data.get("entityType"));
+            commentVO.put("entityId", data.get("entityId"));
+            commentVO.put("postId", data.get("postId"));
+            commentVO.put("noticeCount", messageService.findNoticeCount(userId, TOPIC_COMMENT));
+            commentVO.put("unreadCount", messageService.findNoticeUnreadCount(userId, TOPIC_COMMENT));
+        }
+        model.addAttribute("commentVO", commentVO);
+
+
+        Map<String, Object> likeVO = new HashMap<>();
+        Message like = messageService.findLatestNotice(userId, TOPIC_LIKE);
+        if (like != null) {
+            likeVO.put("notice", like);
+            String content = HtmlUtils.htmlUnescape(like.getContent());
+            HashMap data = JSONObject.parseObject(content, HashMap.class);
+
+            likeVO.put("user", userService.findById((Integer) data.get("userId")));
+            likeVO.put("entityType", data.get("entityType"));
+            likeVO.put("entityId", data.get("entityId"));
+            likeVO.put("postId", data.get("postId"));
+            likeVO.put("noticeCount", messageService.findNoticeCount(userId, TOPIC_LIKE));
+            likeVO.put("unreadCount", messageService.findNoticeUnreadCount(userId, TOPIC_LIKE));
+        }
+        model.addAttribute("likeVO", likeVO);
+
+
+        Map<String, Object> followVO = new HashMap<>();
+        Message follow = messageService.findLatestNotice(userId, TOPIC_FOLLOW);
+        if (follow != null) {
+            followVO.put("notice", follow);
+
+            String content = HtmlUtils.htmlUnescape(like.getContent());
+            HashMap data = JSONObject.parseObject(content, HashMap.class);
+
+            followVO.put("user", userService.findById((Integer) data.get("userId")));
+            followVO.put("entityType", data.get("entityType"));
+            followVO.put("entityId", data.get("entityId"));
+            followVO.put("postId", data.get("postId"));
+            followVO.put("noticeCount", messageService.findNoticeCount(userId, TOPIC_FOLLOW));
+            followVO.put("unreadCount", messageService.findNoticeUnreadCount(userId, TOPIC_FOLLOW));
+        }
+        model.addAttribute("followVO", followVO);
+
+        model.addAttribute("letterUnreadCount", messageService.findLetterUnreadCount(userId, null));
+        model.addAttribute("noticeUnreadCount", messageService.findNoticeUnreadCount(userId, null));
+
+        return "/site/notice";
     }
 }

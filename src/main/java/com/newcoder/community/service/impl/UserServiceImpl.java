@@ -2,7 +2,6 @@ package com.newcoder.community.service.impl;
 
 import com.newcoder.community.entity.LoginTicket;
 import com.newcoder.community.entity.User;
-import com.newcoder.community.mapper.LoginTicketMapper;
 import com.newcoder.community.mapper.UserMapper;
 import com.newcoder.community.service.UserService;
 import com.newcoder.community.utils.CommunityConstant;
