@@ -4,7 +4,6 @@ import com.newcoder.community.entity.Comment;
 import com.newcoder.community.mapper.CommentMapper;
 import com.newcoder.community.mapper.DiscussPostMapper;
 import com.newcoder.community.service.CommentService;
-import com.newcoder.community.service.DiscussPostService;
 import com.newcoder.community.utils.CommunityConstant;
 import com.newcoder.community.utils.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +53,10 @@ public class CommentServiceImpl implements CommentService, CommunityConstant {
         }
 
         return 0;
+    }
+
+    @Override
+    public Comment findCommentById(int commentId) {
+        return commentMapper.selectCommentById(commentId);
     }
 }

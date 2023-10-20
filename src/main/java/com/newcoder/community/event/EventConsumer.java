@@ -19,7 +19,7 @@ import java.util.Map;
 @Component
 public class EventConsumer implements CommunityConstant {
     private static final Logger logger = LoggerFactory.getLogger(EventConsumer.class);
-    
+
     @Autowired
     private MessageService messageService;
 
