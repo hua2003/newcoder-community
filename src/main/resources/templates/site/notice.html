@@ -76,7 +76,7 @@
 				
 				<!-- 通知列表 -->
 				<ul class="list-unstyled">
-					<li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:if="commentVO.notice!=null">
+					<li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:if="${commentVO!=null}">
 						<span class="badge badge-danger" th:text="${commentVO.unreadCount!=0?commentVO.unreadCount:''}">3</span>
 						<img src="http://static.nowcoder.com/images/head/reply.png" class="mr-4 user-header" alt="通知图标">
 						<div class="media-body">
@@ -85,14 +85,14 @@
 								<span class="float-right text-muted font-size-12" th:text="${#dates.format(commentVO.notice.createTime, 'yyyy-MM-dd HH:mm:ss')}">2019-04-28 14:13:25</span>
 							</h6>
 							<div>
-								<a href="123">用户 <i th:utext="${commentVO.user.username}">nowcoder</i> 评论了你的<b th:text="${likeVO.entityType==1?'帖子':'回复'}">帖子</b> ...</a>
+								<a th:href="@{/notice/detail/comment}">用户 <i th:utext="${commentVO.user.username}">nowcoder</i> 评论了你的<b th:text="${likeVO.entityType==1?'帖子':'回复'}">帖子</b> ...</a>
 								<ul class="d-inline font-size-12 float-right">
 									<li class="d-inline ml-2"><span class="text-primary">共 <i th:text="${commentVO.noticeCount}">3</i> 条会话</span></li>
 								</ul>
 							</div>
 						</div>
 					</li>
-					<li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:if="likeVO.notice!=null">
+					<li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:if="${likeVO!=null}">
 						<span class="badge badge-danger" th:text="${likeVO.unreadCount!=0?likeVO.unreadCount:''}">3</span>
 						<img src="http://static.nowcoder.com/images/head/like.png" class="mr-4 user-header" alt="通知图标">
 						<div class="media-body">
@@ -101,14 +101,14 @@
 								<span class="float-right text-muted font-size-12" th:text="${#dates.format(likeVO.notice.createTime, 'yyyy-MM-dd HH:mm:ss')}">2019-04-28 14:13:25</span>
 							</h6>
 							<div>
-								<a href="notice-detail.html">用户 <i th:utext="${likeVO.user.username}">nowcoder</i> 点赞了你的<b th:text="${likeVO.entityType==1?'帖子':'回复'}">帖子</b> ...</a>
+								<a th:href="@{/notice/detail/like}">用户 <i th:utext="${likeVO.user.username}">nowcoder</i> 点赞了你的<b th:text="${likeVO.entityType==1?'帖子':'回复'}">帖子</b> ...</a>
 								<ul class="d-inline font-size-12 float-right">
 									<li class="d-inline ml-2"><span class="text-primary">共 <i th:text="${likeVO.noticeCount!=0?likeVO.noticeCount:''}">3</i> 条会话</span></li>
 								</ul>
 							</div>
 						</div>
 					</li>
-					<li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:if="followVO.notice!=null">
+					<li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:if="${followVO!=null}">
 						<span class="badge badge-danger" th:text="${followVO.unreadCount!=0?followVO.unreadCount:''}">3</span>
 						<img src="http://static.nowcoder.com/images/head/follow.png" class="mr-4 user-header" alt="通知图标">
 						<div class="media-body">
@@ -117,7 +117,7 @@
 								<span class="float-right text-muted font-size-12" th:text="${#dates.format(followVO.notice.createTime, 'yyyy-MM-dd HH:mm:ss')}">2019-04-28 14:13:25</span>
 							</h6>
 							<div>
-								<a href="notice-detail.html">用户 <i th:utext="${followVO.user.username}">nowcoder</i> 关注了你 ...</a>
+								<a th:href="@{/notice/detail/follow}">用户 <i th:utext="${followVO.user.username}">nowcoder</i> 关注了你 ...</a>
 								<ul class="d-inline font-size-12 float-right">
 									<li class="d-inline ml-2"><span class="text-primary">共 <i th:text="${followVO.noticeCount!=0?followVO.noticeCount:''}">3</i> 条会话</span></li>
 								</ul>

@@ -5,8 +5,10 @@ import com.newcoder.community.entity.Page;
 import com.newcoder.community.entity.User;
 import com.newcoder.community.service.DiscussPostService;
 import com.newcoder.community.service.LikeService;
+import com.newcoder.community.service.MessageService;
 import com.newcoder.community.service.UserService;
 import com.newcoder.community.utils.CommunityConstant;
+import com.newcoder.community.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +25,13 @@ public class HomeController implements CommunityConstant {
     private LikeService likeService;
 
     @Autowired
+    private MessageService messageService;
+
+    @Autowired
     private DiscussPostService discussPostService;
+
+    @Autowired
+    private HostHolder hostHolder;
     
     @GetMapping("/index")
     public String getIndexPage(Model model, Page page) {

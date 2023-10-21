@@ -126,11 +126,12 @@ public class MessageController implements CommunityConstant {
 
     @GetMapping("/notice/list")
     public String getNoticePage(Model model) {
-        int userId = hostHolder.getUser().getId();
+        User user = hostHolder.getUser();
+        int userId = user.getId();
 
-        Map<String, Object> commentVO = new HashMap<>();
         Message comment = messageService.findLatestNotice(userId, TOPIC_COMMENT);
         if (comment != null) {
+            Map<String, Object> commentVO = new HashMap<>();
             commentVO.put("notice", comment);
 
             String content = HtmlUtils.htmlUnescape(comment.getContent());
@@ -142,13 +143,12 @@ public class MessageController implements CommunityConstant {
             commentVO.put("postId", data.get("postId"));
             commentVO.put("noticeCount", messageService.findNoticeCount(userId, TOPIC_COMMENT));
             commentVO.put("unreadCount", messageService.findNoticeUnreadCount(userId, TOPIC_COMMENT));
+            model.addAttribute("commentVO", commentVO);
         }
-        model.addAttribute("commentVO", commentVO);
 
-
-        Map<String, Object> likeVO = new HashMap<>();
         Message like = messageService.findLatestNotice(userId, TOPIC_LIKE);
         if (like != null) {
+            Map<String, Object> likeVO = new HashMap<>();
             likeVO.put("notice", like);
             String content = HtmlUtils.htmlUnescape(like.getContent());
             HashMap data = JSONObject.parseObject(content, HashMap.class);
@@ -159,13 +159,12 @@ public class MessageController implements CommunityConstant {
             likeVO.put("postId", data.get("postId"));
             likeVO.put("noticeCount", messageService.findNoticeCount(userId, TOPIC_LIKE));
             likeVO.put("unreadCount", messageService.findNoticeUnreadCount(userId, TOPIC_LIKE));
+            model.addAttribute("likeVO", likeVO);
         }
-        model.addAttribute("likeVO", likeVO);
 
-
-        Map<String, Object> followVO = new HashMap<>();
         Message follow = messageService.findLatestNotice(userId, TOPIC_FOLLOW);
         if (follow != null) {
+            Map<String, Object> followVO = new HashMap<>();
             followVO.put("notice", follow);
 
             String content = HtmlUtils.htmlUnescape(like.getContent());
@@ -177,12 +176,49 @@ public class MessageController implements CommunityConstant {
             followVO.put("postId", data.get("postId"));
             followVO.put("noticeCount", messageService.findNoticeCount(userId, TOPIC_FOLLOW));
             followVO.put("unreadCount", messageService.findNoticeUnreadCount(userId, TOPIC_FOLLOW));
+            model.addAttribute("followVO", followVO);
         }
-        model.addAttribute("followVO", followVO);
-
-        model.addAttribute("letterUnreadCount", messageService.findLetterUnreadCount(userId, null));
-        model.addAttribute("noticeUnreadCount", messageService.findNoticeUnreadCount(userId, null));
 
         return "/site/notice";
+    }
+
+    @GetMapping("/notice/detail/{topic}")
+    public String getNoticeDetail(@PathVariable("topic") String topic, Page page, Model model) {
+        User user = hostHolder.getUser();
+
+        page.setLimit(5);
+        page.setPath("/notice/detail/" + topic);
+        page.setRows(messageService.findNoticeCount(user.getId(), topic));
+
+        List<Message> notices = messageService.findNotices(user.getId(), topic, page.getOffset(), page.getLimit());
+        List<Map<String, Object>> noticesVO = new ArrayList<>(notices.size());
+        for (Message notice : notices) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("notice", notice);
+
+            String content = HtmlUtils.htmlUnescape(notice.getContent());
+            HashMap data = JSONObject.parseObject(content, HashMap.class);
+            map.put("user", userService.findById((Integer) data.get("userId")));
+            map.put("entityType", data.get("entityType"));
+            map.put("entityId", data.get("entityId"));
+            map.put("postId", data.get("postId"));
+            map.put("fromUser", userService.findById(notice.getFromId()));
+            noticesVO.add(map);
+        }
+        model.addAttribute("noticeVO", noticesVO);
+
+        List<Integer> ids = new ArrayList<>();
+        if (notices != null) {
+            for (Message notice : notices) {
+                if (notice.getToId() == user.getId() && notice.getStatus() == 0) {
+                    ids.add(notice.getId());
+                }
+            }
+        }
+        if (!ids.isEmpty()) {
+            messageService.readMessage(ids, 1);
+        }
+
+        return "/site/notice-detail";
     }
 }
