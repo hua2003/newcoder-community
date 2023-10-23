@@ -3,12 +3,16 @@ package com.nowcoder.community.controller.interceptor;
 import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.mapper.LoginTicketMapper;
-import com.nowcoder.community.mapper.UserMapper;
+import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.utils.CookieUtil;
 import com.nowcoder.community.utils.HostHolder;
 import com.nowcoder.community.utils.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,13 +27,13 @@ public class LoginInterceptor implements HandlerInterceptor {
     private LoginTicketMapper loginTicketMapper;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private HostHolder hostHolder;
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -40,8 +44,12 @@ public class LoginInterceptor implements HandlerInterceptor {
             LoginTicket loginTicket = (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
 
             if (loginTicket != null && loginTicket.getStatus() == 0 && loginTicket.getExpired().after(new Date())) {
-                User user = userMapper.selectById(loginTicket.getUserId());
+                User user = userService.findById(loginTicket.getUserId());
                 hostHolder.setUser(user);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(
+                        user, user.getPassword(), userService.getAuthorities(user.getId())
+                );
+                SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
             }
         }
         return true;
@@ -58,5 +66,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         hostHolder.clear();
+        SecurityContextHolder.clearContext();
     }
 }
