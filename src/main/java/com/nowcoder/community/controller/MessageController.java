@@ -34,6 +34,7 @@ public class MessageController implements CommunityConstant {
     @GetMapping("/letter/list")
     public String getLetterList(Model model, Page page) {
         User user = hostHolder.getUser();
+        System.out.println("tyyyyyyyyyes");
 
         page.setLimit(5);
         page.setPath("/letter/list");
@@ -166,7 +167,7 @@ public class MessageController implements CommunityConstant {
             Map<String, Object> followVO = new HashMap<>();
             followVO.put("notice", follow);
 
-            String content = HtmlUtils.htmlUnescape(like.getContent());
+            String content = HtmlUtils.htmlUnescape(follow.getContent());
             HashMap data = JSONObject.parseObject(content, HashMap.class);
 
             followVO.put("user", userService.findById((Integer) data.get("userId")));

@@ -43,7 +43,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                         AUTHORITY_ADMIN,
                         AUTHORITY_MODERATOR
                 )
-                .anyRequest().permitAll();
+                .antMatchers(
+                        "/discuss/top",
+                        "/discuss/wonderful"
+                )
+                .hasAnyAuthority(
+                        AUTHORITY_MODERATOR
+                )
+                .antMatchers(
+                        "/discuss/delete"
+                )
+                .hasAnyAuthority(
+                        AUTHORITY_ADMIN
+                )
+                .anyRequest().permitAll()
+                .and().csrf().disable();
 
         http.exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationEntryPoint() {
@@ -51,10 +65,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
                         String xRequestedWith = request.getHeader("x-requested-with");
                         if ("XMLHttpRequest".equals(xRequestedWith)) {
-                            // 向前端返回一个字符串，人为规定是json格式，前端需要手动转换成json格式
                             response.setContentType("application/plain;charset=utf-8");
                             PrintWriter writer = response.getWriter();
-                            writer.write(CommunityUtil.getJSONString(403, "你还没有登录！"));
+                            writer.write(CommunityUtil.getJSONString(403, "你还没有登录哦!"));
                         } else {
                             response.sendRedirect(request.getContextPath() + "/login");
                         }
@@ -65,10 +78,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
                         String xRequestedWith = request.getHeader("x-requested-with");
                         if ("XMLHttpRequest".equals(xRequestedWith)) {
-                            // 向前端返回一个字符串，人为规定是json格式，前端需要手动转换成json格式
                             response.setContentType("application/plain;charset=utf-8");
                             PrintWriter writer = response.getWriter();
-                            writer.write(CommunityUtil.getJSONString(403, "你没有访问权限！"));
+                            writer.write(CommunityUtil.getJSONString(403, "你没有访问此功能的权限!"));
                         } else {
                             response.sendRedirect(request.getContextPath() + "/denied");
                         }

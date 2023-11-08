@@ -9,4 +9,7 @@ public interface DiscussPostService {
     int findDiscussPostRows(int userId);
     int insertDiscussPost(DiscussPost discussPost);
     DiscussPost selectDiscussPostById(int id);
+    int updateType(int id, int type);
+
+    int updateStatus(int id, int status);
 }

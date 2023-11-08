@@ -47,8 +47,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                 User user = userService.findById(loginTicket.getUserId());
                 hostHolder.setUser(user);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        user, user.getPassword(), userService.getAuthorities(user.getId())
-                );
+                        user, user.getPassword(), userService.getAuthorities(user.getId()));
                 SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
             }
         }
@@ -66,6 +65,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         hostHolder.clear();
-        SecurityContextHolder.clearContext();
+//        SecurityContextHolder.clearContext();
     }
 }

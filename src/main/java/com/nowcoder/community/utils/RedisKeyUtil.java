@@ -9,6 +9,8 @@ public class RedisKeyUtil {
     private static final String PREFIX_KAPTACHA = "kaptcha";
     private static final String PREFIX_TICKET = "ticket";
     private static final String PREFIX_USER = "user";
+    private static final String PREFIX_UV = "uv";
+    private static final String PREFIX_DAU = "dau";
 
     // like:entity:entityType:entityId  ->  set<userId>
     public static String getEntityLikeKey(int entityType, int entityId) {
@@ -45,5 +47,15 @@ public class RedisKeyUtil {
     // 用户
     public static String getUserKey(int userId) {
         return PREFIX_USER + SPLIT + userId;
+    }
+
+    // 指定日期UV
+    public static String getUvKey(String date) {
+        return PREFIX_UV + SPLIT + date;
+    }
+
+    // 指定日期范围UV
+    public static String getUvKey(String start, String end) {
+        return PREFIX_UV + SPLIT + start + SPLIT + end;
     }
 }
